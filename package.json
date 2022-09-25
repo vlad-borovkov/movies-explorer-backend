@@ -1,8 +1,8 @@
 {
-  "name": "express-mesto-gha",
+  "name": "movies-explorer-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "indexrs.js",
+  "main": "indexs.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
