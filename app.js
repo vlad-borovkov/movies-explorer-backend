@@ -72,8 +72,8 @@ app.post(
 app.use(auth);
 /// вратА аутентификации\\\
 
-// app.use("/users", require("./routes/users"));
-// app.use("/cards", require("./routes/card"));
+app.use("/users", require("./routes/users"));
+app.use("/movies", require("./routes/movies"));
 
 app.use((req, res, next) => {
   next(new NotFoundError("Такой страницы не существует"));

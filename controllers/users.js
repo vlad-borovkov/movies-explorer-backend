@@ -17,12 +17,16 @@ const OK = {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  console.log(req.user._id); // почему летит два id когда с сайта???
   User.findById(req.user._id) // методом поиска обращаемся к бд
     .orFail(() => {
       throw new NotFoundError("Указанный пользователь не найден");
     })
-    .then((user) => res.status(OK.OK).send({ user }))
+    .then((user) =>
+      res.status(OK.OK).send({
+        name: user.name,
+        email: user.email,
+      })
+    )
     .catch((err) => {
       if (err.name === "CastError") {
         next(new BadRequestError("Переданы некорректные данные"));
@@ -86,8 +90,6 @@ module.exports.createUser = (req, res, next) => {
         res.status(OK.OK).send({
           _id: user._id,
           name: user.name,
-          about: user.about,
-          avatar: user.avatar,
           email: user.email,
         });
       })
@@ -104,17 +106,20 @@ module.exports.createUser = (req, res, next) => {
 };
 
 module.exports.updateUser = (req, res, next) => {
-  const { name, about } = req.body;
-
+  const { name, email } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
-    { name, about },
+    { name, email },
     { new: true, runValidators: true }
   )
     .orFail(() => {
       throw new NotFoundError("Пользователь с указанным _id не найден");
     })
-    .then((user) => res.status(OK.OK).send({ user }))
+    .then((user) =>
+      res
+        .status(OK.OK)
+        .send({ _id: user._id, name: user.name, email: user.email })
+    ) // что отправит?
     .catch((err) => {
       if (err.name === "ValidationError") {
         next(

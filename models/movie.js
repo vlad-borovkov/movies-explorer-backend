@@ -18,6 +18,10 @@ const movieShema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  description: {
+    type: String,
+    required: true,
+  },
   image: {
     type: String,
     required: true,
@@ -46,8 +50,9 @@ const movieShema = new mongoose.Schema({
     message: (props) => `${props.value} is not a valid URL!`,
   },
   owner: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true, // решить с получением ID
   },
   movieId: {
     type: String,
