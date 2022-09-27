@@ -6,11 +6,13 @@ require("dotenv").config();
 const express = require("express");
 
 const app = express(); // вызываем библиоетку express
-const mongoose = require("mongoose"); // мостик между нодой и mongo
+const mongoose = require("mongoose");
+// мостик между нодой и mongo
 const { PORT = 3000 } = process.env; // локальный порт нашего сервера
 const cors = require("cors"); // контролируем кросс-доменные запросы
 const bodyParser = require("body-parser"); // преобразуем общение клиент-сервер в json
-const { celebrate, Joi, errors } = require("celebrate"); // для защиты роутов валидацией
+const { celebrate, Joi, errors } = require("celebrate");
+// для защиты роутов валидацией
 app.use(bodyParser.json()); // для собирания JSON-формата
 app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
 const { config } = require("dotenv");
