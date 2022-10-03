@@ -4,7 +4,7 @@ const express = require("express");
 const app = express(); // вызываем библиоетку express
 const mongoose = require("mongoose");
 // мостик между нодой и mongo
-const { PORT = 3000, NODE_ENV, MONGO_ADR, MONGO_PORT, DB_NAME } = process.env; // локальный порт нашего сервера
+const { PORT = 3000, NODE_ENV, MONGO_ADR } = process.env; // локальный порт нашего сервера
 const cors = require("cors"); // контролируем кросс-доменные запросы
 const bodyParser = require("body-parser"); // преобразуем общение клиент-сервер в json
 const { celebrate, Joi, errors } = require("celebrate");
