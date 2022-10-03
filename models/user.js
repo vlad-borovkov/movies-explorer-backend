@@ -1,7 +1,3 @@
-/* eslint-disable func-names */
-/* eslint-disable comma-dangle */
-/* eslint-disable max-len */
-/* eslint-disable quotes */
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const validator = require("validator"); // проверка селебрейтом
@@ -25,7 +21,10 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    select: false, // необходимо добавить поле select, так по умолчанию хеш пароля пользователя не будет возвращаться из базы
+    select: false,
+    // необходимо добавить поле select,
+    // так по умолчанию хеш пароля пользователя
+    // не будет возвращаться из базы
   },
 });
 
@@ -37,18 +36,13 @@ userSchema.statics.findUserByCredentials = function (email, password) {
         throw new UnauthError("Неправильные почта или пароль");
       }
 
-      return (
-        bcrypt
-          .compare(password, user.password)
-          // eslint-disable-next-line consistent-return
-          .then((matched) => {
-            if (!matched) {
-              throw new UnauthError("Неправильные почта или пароль");
-            }
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          throw new UnauthError("Неправильные почта или пароль");
+        }
 
-            return user;
-          })
-      );
+        return user;
+      });
     });
 };
 

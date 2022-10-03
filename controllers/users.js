@@ -1,8 +1,3 @@
-/* eslint-disable object-curly-newline */
-/* eslint-disable function-paren-newline */
-/* eslint-disable comma-dangle */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable quotes */
 const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -12,21 +7,19 @@ const NotFoundError = require("../errors/not-found-error");
 const BadRequestError = require("../errors/bad-request-error");
 const ConflictError = require("../errors/conflict-error");
 
-const OK = {
-  OK: 200,
-};
+const OK = { OK: 200 };
 
 module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id) // методом поиска обращаемся к бд
     .orFail(() => {
       throw new NotFoundError("Указанный пользователь не найден");
     })
-    .then((user) =>
+    .then((user) => {
       res.status(OK.OK).send({
         name: user.name,
         email: user.email,
-      })
-    )
+      });
+    })
     .catch((err) => {
       if (err.name === "CastError") {
         next(new BadRequestError("Переданы некорректные данные"));
@@ -44,9 +37,7 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === "production" ? JWT_SECRET : "dev-secret",
-        {
-          expiresIn: "7d",
-        }
+        { expiresIn: "7d" }
       );
       res.status(200).send({ token });
     })
@@ -99,6 +90,8 @@ module.exports.updateUser = (req, res, next) => {
             "Переданы некорректные данные при обновлении профиля"
           )
         );
+      } else if (err.code === 11000) {
+        next(new ConflictError("Email пользователя должен быть уникальным"));
       } else {
         next(err);
       }

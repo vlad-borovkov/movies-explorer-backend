@@ -1,7 +1,6 @@
 const Movie = require("../models/movie");
 const NotFoundError = require("../errors/not-found-error");
 const BadRequestError = require("../errors/bad-request-error");
-// const ForbiddenError = require("../errors/forbidden-error");
 
 module.exports.getAllUserMovie = (req, res, next) => {
   Movie.find({ owner: req.user._id }) // проверить, что летит строка
@@ -55,11 +54,19 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovieById = (req, res, next) => {
-  Movie.findByIdAndDelete(req.params.movieId)
+  Movie.findById(req.params.movieId)
     .then((movie) => {
       if (!movie) {
         next(new NotFoundError("Карточка с указанным _id не найдена"));
-      } else res.send({ message: "Фильм удалён" });
+      } else if (movie.owner.toString() === req.user._id) {
+        Movie.deleteOne({ _id: req.params.movieId }).then(
+          res.send({ message: "Карточка удалена" })
+        );
+      } else {
+        next(
+          new ForbiddenError("Запрещено удалять карточки чужих пользователей")
+        );
+      }
     })
     .catch((err) => {
       if (err.name === "CastError") {

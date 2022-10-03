@@ -1,28 +1,23 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
-/* eslint-disable quotes */
 require("dotenv").config();
+// const { config } = require("dotenv");
 const express = require("express");
-
 const app = express(); // вызываем библиоетку express
 const mongoose = require("mongoose");
 // мостик между нодой и mongo
-const { PORT = 3000 } = process.env; // локальный порт нашего сервера
+const { PORT = 3000, NODE_ENV, MONGO_ADR, MONGO_PORT, DB_NAME } = process.env; // локальный порт нашего сервера
 const cors = require("cors"); // контролируем кросс-доменные запросы
 const bodyParser = require("body-parser"); // преобразуем общение клиент-сервер в json
 const { celebrate, Joi, errors } = require("celebrate");
 // для защиты роутов валидацией
 app.use(bodyParser.json()); // для собирания JSON-формата
 app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
-const { config } = require("dotenv");
 const { requestLogger, errorLogger } = require("./middlewares/logger"); // для ведения логов ошибок
 const { createUser, login } = require("./controllers/users");
 const auth = require("./middlewares/auth");
 const NotFoundError = require("./errors/not-found-error");
 
 // порядок расположения обращений к app - КРАЙНЕ ВАЖЕН
-mongoose.connect("mongodb://localhost:27017/moviesdb", {}); // даём знать мангусту где наша БД
+mongoose.connect(NODE_ENV === "production" ? MONGO_ADR : MONGO_ADR, {}); // даём знать мангусту где наша БД
 
 app.use(requestLogger); // подключаем логгер запросов
 
@@ -54,7 +49,7 @@ app.post(
     body: Joi.object().keys({
       email: Joi.string().email().required(),
       password: Joi.string().required(),
-      name: Joi.string().min(2).max(30),
+      name: Joi.string().required().min(2).max(30),
     }),
   }),
   createUser
@@ -85,7 +80,6 @@ app.use(errorLogger); // подключаем логгер ошибок
 
 // обработчики ошибок
 app.use(errors()); // обработчик ошибок celebrate
-
 app.use((err, req, res, next) => {
   // централизованный обработчик ошибок
   // если у ошибки нет статуса, выставляем 500
