@@ -1,12 +1,12 @@
-const router = require("express").Router();
-const { celebrate, Joi } = require("celebrate");
+const router = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
 
-const { updateUser, getCurrentUser } = require("../controllers/users");
+const { updateUser, getCurrentUser } = require('../controllers/users');
 
-router.get("/me", getCurrentUser); // возвращает инфо о текущем пользователе при получении токена
+router.get('/me', getCurrentUser); // возвращает инфо о текущем пользователе при получении токена
 
 router.patch(
-  "/me",
+  '/me',
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
@@ -14,11 +14,11 @@ router.patch(
         .required()
         .email({
           minDomainSegments: 2,
-          tlds: { allow: ["com", "net", "ru"] },
+          tlds: { allow: ['com', 'net', 'ru'] },
         }),
     }),
   }),
-  updateUser
+  updateUser,
 ); // обновляет профиль
 
 module.exports = router;
