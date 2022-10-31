@@ -40,6 +40,7 @@ const options = {
     'origin',
     'Authorization',
     'Access-Control-Allow-Methods',
+    'Access-Control-Allow-Origin',
   ],
   credentials: true,
 };
