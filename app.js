@@ -18,12 +18,20 @@ const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-error');
 
 // порядок расположения обращений к app - КРАЙНЕ ВАЖЕН
-mongoose.connect(NODE_ENV === 'production' ? MONGO_ADR : 'mongodb://localhost:27017/moviesdb', {}); // даём знать мангусту где наша БД
+mongoose.connect(
+  NODE_ENV === 'production' ? MONGO_ADR : 'mongodb://localhost:27017/moviesdb',
+  {},
+); // даём знать мангусту где наша БД
 
 app.use(requestLogger); // подключаем логгер запросов
 
 const options = {
-  origin: ['http://localhost:3001', 'https://localhost:3001'],
+  origin: [
+    'https://favmovies.nomoredomains.icu',
+    'http://favmovies.nomoredomains.icu',
+    'http://localhost:3001',
+    'https://localhost:3001',
+  ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
   optionsSuccessStatus: 204,
